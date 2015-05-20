@@ -19,13 +19,13 @@ a {
 }
 
 header {
-  background-color: #15848F;
+  //background-color: #15848F;
   //color: #ffffff;
   //font-size: 30px;
-  height: 84px;
+  //height: 184px;
   line-height: 64px;
   padding: 16px 0px;
-  box-shadow: 0px 1px rgba(0, 0, 0, 0.24);
+  //box-shadow: 0px 1px rgba(0, 0, 0, 0.24);
 }
 
 header .header-title {

@@ -54,6 +54,13 @@ Router::scope('/', function ($routes) {
      */
     $routes->connect('/pages/*', ['controller' => 'Pages', 'action' => 'display']);
 
+	// Routes for login/logout/register functions
+	$routes->connect('/login',['controller' => 'Users', 'action'=> 'login']);
+	$routes->connect('/logout',['controller' => 'Users', 'action'=> 'logout']);
+	$routes->connect('/register/*',['controller' => 'Users', 'action'=> 'register']);
+
+	$routes->connect('/timeline/*',['controller' => 'TaskTimeline', 'action'=> 'view']);
+
     /**
      * Connect catchall routes for all controllers.
      *

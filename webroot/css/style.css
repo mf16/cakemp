@@ -8,7 +8,8 @@
 	cursor: pointer;
 }
 header{
-	height: 83px;
+	//height: 83px;
+	height: 100px;
 }
 body{
 	background-color: #e0dcd9 !important;
@@ -26,7 +27,7 @@ a,a:active,a:hover,a:visited{
 	text-decoration: none !important;
 }
 button{
-	text-transform: uppercase;
+	//text-transform: uppercase;
 	font-weight: 300;
 	font-family: 'Lato', sans-serif;
 	margin-bottom: 20px;
@@ -180,7 +181,7 @@ a.loginHeader:hover{
 	background-color:#EDEDED;
 	border-radius: 0 0 5px 5px
 }
-.form-signin input[type="text"], .form-signin input[type="password"] {
+.form-signin input[type="email"], .form-signin input[type="password"] {
 	margin-bottom: 15px;
 	border-radius: 5px;
 	-webkit-border-radius: 5px;
@@ -363,7 +364,7 @@ select.red{
 
 /*TASK PAGE*/
 .taskDescription{
- padding: 50px 0;
+ //padding: 50px 0;
 }
 
 

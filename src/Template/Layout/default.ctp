@@ -13,6 +13,16 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
+
+// Vars set by Controller
+//	$userRole
+// $userFirstName
+// $userLastName
+if(!empty($userRole)){
+	$loggedIn=true;
+} else {
+	$loggedIn=false;
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -59,7 +69,7 @@
 				$this->Html->image('logo.png', array(
 					'alt'=>'Logo'
 				)),
-				array('controller'=>'home','action'=>'index'),
+				array('controller'=>'','action'=>'index'),
 				array('class'=>'navbar-brand','escape'=>false)
 			);
 			?>
@@ -67,24 +77,33 @@
 
 			<!-- Collect the nav links, forms, and other content for toggling -->
 			<?php
-			if(isset($_SESSION['user_id'])){
+			if($loggedIn){
 			?>
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			  <ul class="nav navbar-nav navbar-right">
 				<li><a href="/dashboard">Dashboard</a></li>
 				<li class="dropdown">
-				<?php
-					if(isset($_SESSION['user_firstName']) && isset($_SESSION['user_lastName'])){
-						$name=$_SESSION['user_firstName'].' '.$_SESSION['user_lastName'];
-					} else {
-						$name=$_SESSION['display_name'];
+					<?php
+					$name='';
+					if(isset($userFirstName)){
+						$name.=$userFirstName;
+						$name.=' ';
 					}
-				?>
-				  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><?php echo $name?><span class="caret"></span></a>
+					if(isset($userLastName)){
+						$name.=$userLastName;
+					}
+					?>
+				  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><?php echo __($name); ?><span class="caret"></span></a>
 				  <ul class="dropdown-menu" role="menu">
 					<li><a href="/user/settings">Account Settings</a></li>
-					<li><a href="/credits/add">Add Credits</a></li>
-					<li class="divider"></li>
+					<?php
+					if($userRole=='client'){
+					?>
+						<li><a href="/credits/add">Add Credits</a></li>
+						<li class="divider"></li>
+					<?php
+					}
+					?>
 					<li><a href="/logout">Logout</a></li>
 				  </ul>
 				</li>
@@ -123,10 +142,11 @@
         </div>
 		-->
     </header>
-    <div id="container">
+    <div class="container">
 
         <div id="content">
             <?= $this->Flash->render() ?>
+            <?= $this->Flash->render('auth') ?>
 
             <div class="row">
                 <?= $this->fetch('content') ?>

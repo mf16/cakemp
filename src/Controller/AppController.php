@@ -38,6 +38,25 @@ class AppController extends Controller
     {
         parent::initialize();
         $this->loadComponent('Flash');
+		$this->loadComponent('Auth', [
+			'authorize'=> 'Controller',
+			'authenticate' => [
+				'Form'=> [
+					'fields' => [
+						'username' => 'email',
+						'password' => 'password'
+					]
+				]
+			],
+			'loginAction' => [
+				'controller' => 'Users',
+				'action' => 'login'
+			]
+		]);
+		$this->Auth->allow(['display']);
+		$this->set('userRole',$this->Auth->user('role'));
+		$this->set('userFirstName',$this->Auth->user('first_name'));
+		$this->set('userLastName',$this->Auth->user('last_name'));
     }
 
 	public $helpers=[
@@ -45,7 +64,18 @@ class AppController extends Controller
 			'className'=>'Bootstrap.BsHtml'
 		],
 		'Paginator'=>[
-			'templates'=>'Bootstrap.bs_paginator.php'
+			'templates'=>'Bootstrap.bs_paginator'
 		],
 	];
+
+	public function isAuthorized($user)
+	{
+		// admin has access to everything
+		if($this->Auth->user('role')=='admin'){
+			return true;
+		} else {
+			// everyone else default to false
+			return false;
+		}
+	}
 }
