@@ -54,21 +54,51 @@ class DashboardController extends AppController
 			if($this->request->is('post')){
 				$users=TableRegistry::get('Users');
 				$user=$users->get($this->Auth->user('id'));
+
+				$accounts=TableRegistry::get('Accounts');
+
 				if($this->request->data['actionName']=='addAccount'){
 					// add account
-					$accounts=TableRegistry::get('Accounts');
 					$account=$accounts->newEntity();
 					$account->name=$this->request->data['account_name'];
 					$account->password=$this->request->data['account_password'];
 					$account=$accounts->save($account);
+
 					$user->account_id=$account->id;
 					$users->save($user);
 					$userArray=$user->toArray();
 					$this->Auth->setUser($userArray);
+
+					//2 free tokens for a new account
+					$credits=TableRegistry::get('Credits');
+					for($i=0;$i<2;$i++){
+						$credit=$credits->newEntity();
+						$credit->status=1;
+						$credit->account_id=$account->id;
+						$credit->purchase_id=0;
+						$credit->type='free';
+						//debug($credit);die;
+						$credits->save($credit);
+					}
+
 					$this->redirect(['controller' => 'dashboard']);
 				} else if($this->request->data['actionName']=='joinAccount'){
 					// join account
-					debug($user);die;
+					try {
+						$account=$accounts->get($this->request->data['accountid']);
+						if($this->request->data['account_password']==$account->password){
+							$user->account_id=$account->id;
+							$users->save($user);
+							$userArray=$user->toArray();
+							$this->Auth->setUser($userArray);
+							$this->redirect(['controller' => 'dashboard']);
+						}
+					} catch (\Exception $e) {
+						$this->Flash->error($e);
+						$this->Flash->error('Could not add you to that account. Please double check the account id and password and try again.');
+						//debug($e);
+					}
+					//debug($user);die;
 				}
 			}
 		} else if ($this->Auth->user('role')=='manager'){
@@ -116,15 +146,38 @@ class DashboardController extends AppController
 			;
 			$this->set('awaitingTasks',$query->toArray());
 
+			// Tasks awaiting a bid Acceptance
+			$query=$tasks->find('all')
+				->contain('TaskStatuses')
+				->contain('Skillsets')
+				->contain('Users')
+				->contain('Bids')
+				->where(['TaskStatuses.status =' => 'awaiting bid acceptance'])
+				->andWhere(['Users.manager =' => $this->Auth->user('id')])
+			;
+			$this->set('awaitingAccTasks',$query->toArray());
+
 			// Tasks bid rejected
 			$query=$tasks->find('all')
 				->contain('TaskStatuses')
 				->contain('Skillsets')
 				->contain('Users')
+				->contain('Bids')
 				->where(['TaskStatuses.status =' => 'bid rejected'])
 				->andWhere(['Users.manager =' => $this->Auth->user('id')])
 			;
 			$this->set('rejectedTasks',$query->toArray());
+
+			// Tasks awaiting a completion confirmation
+			$query=$tasks->find('all')
+				->contain('TaskStatuses')
+				->contain('Skillsets')
+				->contain('Users')
+				->contain('Bids')
+				->where(['TaskStatuses.status =' => 'client review'])
+				->andWhere(['Users.manager =' => $this->Auth->user('id')])
+			;
+			$this->set('awaitingConfTasks',$query->toArray());
 
 			// Tasks in progress (bid accepted)
 			$query=$tasks->find('all')

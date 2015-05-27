@@ -32,6 +32,19 @@ foreach($availableTasks as $availableTask){
 }
 ?>
 
+<h1>Awaiting bid Acceptance from Client</h1>
+<?php
+foreach($awaitingAccTasks as $task){
+	echo $task->id;
+	echo $task->name;
+	echo $task->description;
+	echo $task->project;
+	//debug($task);
+	echo 'bid: Lead time of '.end($task->bids)->wait_time.' days and work time of '.end($task->bids)->work_time.' hours.';
+	//debug($awaitingTask);
+	echo '<br/>';
+}
+?>
 <h1>Awaiting bid from Developer</h1>
 <?php
 foreach($awaitingTasks as $awaitingTask){
@@ -53,6 +66,8 @@ foreach($rejectedTasks as $rejectedTask){
 		echo $rejectedTask->description;
 		echo $rejectedTask->project;
 		echo 'last dev: '.$selectDevs[$rejectedTask->assignee];
+	echo '<br/>';
+	echo 'last bid: Lead time of '.end($rejectedTask->bids)->wait_time.' days and work time of '.end($rejectedTask->bids)->work_time.' hours.';
 	echo '</div>';
 	echo $this->Form->create($rejectedTask);
 	echo $this->Form->hidden('id',[
@@ -78,6 +93,20 @@ foreach($inProgressTasks as $inProgressTask){
 	echo $inProgressTask->description;
 	echo $inProgressTask->project;
 		echo 'assigned to: '.$selectDevs[$inProgressTask->assignee];
+	//debug($awaitingTask);
+	echo '<br/>';
+}
+?>
+
+<h1>Awaiting Confirmation of Completion from Client</h1>
+<?php
+foreach($awaitingConfTasks as $task){
+	echo $task->id;
+	echo $task->name;
+	echo $task->description;
+	echo $task->project;
+	//debug($task);
+	//echo 'bid: Lead time of '.end($task->bids)->wait_time.' days and work time of '.end($task->bids)->work_time.' hours.';
 	//debug($awaitingTask);
 	echo '<br/>';
 }

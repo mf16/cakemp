@@ -44,6 +44,7 @@ if(!empty($myProjects)){
 			,'6' => 'green'
 			,'7' => 'red'
 			,'8' => 'green'
+			,'9' => 'green'
 		];
 		foreach($myTasks[$myProject->id] as $myTask){
 			?>

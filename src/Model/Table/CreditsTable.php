@@ -33,6 +33,10 @@ class CreditsTable extends Table
             'foreignKey' => 'account_id',
             'joinType' => 'INNER'
         ]);
+		$this->belongsTo('CreditStatuses',[
+			'foreignKey' => 'status',
+			'joinType' =>'INNER'
+		]);
     }
 
     /**
@@ -67,8 +71,9 @@ class CreditsTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['purchase_id'], 'Purchases'));
+        //$rules->add($rules->existsIn(['purchase_id'], 'Purchases'));
         $rules->add($rules->existsIn(['account_id'], 'Accounts'));
+        $rules->add($rules->existsIn(['status'], 'CreditStatuses'));
         return $rules;
     }
 }

@@ -1,5 +1,8 @@
 <?php
 //debug($user);
+if($user->role=='client'){
+	echo 'I belong to account id: '.$user->account_id;
+}
 echo $this->Form->create($user);
 echo $this->Form->input('first_name',[
 	'label'=>'First Name'

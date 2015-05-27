@@ -116,7 +116,7 @@ class CreditsController extends AppController
     {
         $this->paginate = [
             'contain' => ['Purchases']
-			,'where' => 'Credits.account_id = '.$this->Auth->user('id')
+			,'where' => 'Credits.account_id = '.$this->Auth->user('account_id')
         ];
         $this->set('credits', $this->paginate($this->Credits));
         $this->set('_serialize', ['credits']);

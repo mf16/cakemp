@@ -133,7 +133,7 @@ class TaskTimelineController extends AppController
 			//debug($this->request->data);die;
 			if(!isset($this->request->data['message'])){
 				if($this->request->data['actionName']=='submitBid'){
-					$this->request->data['message']='Bid on by '.$this->Auth->user('first_name').' '.$this->Auth->user('last_name').' with a lead time of '.$this->request->data['wait_time'].' days and work time of '.$this->request->data['work_time'].' hours';
+					$this->request->data['message']='Bid on by '.$this->Auth->user('first_name').' '.$this->Auth->user('last_name').' with a lead time of '.$this->request->data['wait_time'].' days and work time of '.$this->request->data['work_time'].' hours.';
 
 					// add to bid table
 					$bids=TableRegistry::get('Bids');
@@ -143,42 +143,81 @@ class TaskTimelineController extends AppController
 					$bid->work_time=$this->request->data['work_time'];
 					$bid->wait_time=$this->request->data['wait_time'];
 					$bids->save($bid);
-
-				} else if ($this->request->data['actionName']=='acceptBid'){
-					$this->request->data['message']='Bid accepted by client.';
-				} else if ($this->request->data['actionName']=='denyBid'){
-					$this->request->data['message']='Bid rejected by client.';
 				}
 			}
 
-            $taskTimeline = $this->TaskTimeline->patchEntity($taskTimeline, $this->request->data);
-            if ($this->TaskTimeline->save($taskTimeline)) {
-				// mark as compelte if needed
-				$tasks=TableRegistry::get('Tasks');
-				$task=$tasks->get($this->request->data['task_id']);
-				if($this->Auth->User('role')=='client' && $this->request->data['message']=='Task marked complete by client.'){
+			// mark as compelte if needed
+			$tasks=TableRegistry::get('Tasks');
+			$query=$tasks->find('all')
+				->contain('Bids')
+				->where(['Tasks.id =' => $this->request->data['task_id']])
+			;
+			$task=$query->first();
+			debug($task);
+			//$task=$tasks->get($this->request->data['task_id']);
 
-					// if status was in progress or client review
-					// mark credits as used
+			//debug($this->request->data);die;
+			/*
+			if($this->Auth->User('role')=='client' && $this->request->data['message']=='Task marked complete by client.'){
 
-					// set complete
-					$task->status_id=8;
+				// if status was in progress or client review
+				// mark credits as used
+
+				// set complete
+				$task->status_id=8;
+				$tasks->save($task);
+			} else if(isset($this->request->data['actionName']) && $this->request->data['actionName']=='cancel'){
+				$task->status_id=9;
+				$tasks->save($task);
+			} else if (isset($this->request->data['actionName']) && $this->request->data['actionName']=='submitBid'){
+				$task->status_id=3;
+				$tasks->save($task);
+			} else if (isset($this->request->data['actionName']) && $this->request->data['actionName']=='acceptBid'){
+				$task->status_id=6;
+				$tasks->save($task);
+			} else if (isset($this->request->data['actionName']) && $this->request->data['actionName']=='denyBid'){
+				$task->status_id=5;
+				$tasks->save($task);
+			} 
+			*/
+			$tasks->patchEntity($task,$this->request->data());
+
+			if($this->request->data['actionName']=='confirmComplete'){
+				// mark credits as used
+				$credits=TableRegistry::get('Credits');
+				$query=$credits->find('all')
+					->contain(['CreditStatuses'])
+					->where(['CreditStatuses.status =' => 'unused'
+					,'Credits.account_id =' => $this->Auth->user('account_id')
+					// todo
+					// add in expiration here
+					])
+				;
+				$availableCredits=$query->toArray();
+				debug(end($task->bids)->work_time);
+				if(count($availableCredits) < end($task->bids)->work_time){
+					$this->Flash->error('You don\'t have enough credits to mark this as complete!');
+					return $this->redirect(['action' => 'view',$this->request->data['task_id']]);
+				} else {
+					// use credits to mark as complete
+					foreach($availableCredits as $credit){
+						$credit->status=2;
+						$credits->save($credit);
+					}
 					$tasks->save($task);
-				} else if ($this->request->data['actionName']=='submitBid'){
-					$task->status_id=3;
-					$tasks->save($task);
-				} else if ($this->request->data['actionName']=='acceptBid'){
-					$task->status_id=6;
-					$tasks->save($task);
-				} else if ($this->request->data['actionName']=='denyBid'){
-					$task->status_id=5;
-					$tasks->save($task);
+					$taskTimeline = $this->TaskTimeline->patchEntity($taskTimeline, $this->request->data);
+					$this->TaskTimeline->save($taskTimeline);
+					$this->Flash->success('Task marked complete.');
+					return $this->redirect(['controller' => 'dashboard']);
 				}
-                //$this->Flash->success('The task timeline has been saved.');
-                return $this->redirect(['action' => 'view',$this->request->data['task_id']]);
-            } else {
-                $this->Flash->error('The task timeline could not be saved. Please, try again.');
-            }
+			} else {
+				$tasks->save($task);
+				$taskTimeline = $this->TaskTimeline->patchEntity($taskTimeline, $this->request->data);
+				$this->TaskTimeline->save($taskTimeline);
+			}
+			//debug($task);die;
+			//$this->Flash->success('The task timeline has been saved.');
+			return $this->redirect(['action' => 'view',$this->request->data['task_id']]);
         }
 	
 		if(empty($taskid)){
