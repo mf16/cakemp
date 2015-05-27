@@ -49,6 +49,9 @@ class TasksTable extends Table
             'foreignKey' => 'assignee'
 			,'joinTye' => 'LEFT'
         ]);
+		$this->hasMany('Bids',[
+			'foreignKey' => 'tasks_id'
+		]);
     }
 
     /**

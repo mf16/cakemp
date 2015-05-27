@@ -28,7 +28,7 @@ CREATE TABLE `accounts` (
   `name` varchar(45) NOT NULL,
   `password` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -37,7 +37,7 @@ CREATE TABLE `accounts` (
 
 LOCK TABLES `accounts` WRITE;
 /*!40000 ALTER TABLE `accounts` DISABLE KEYS */;
-INSERT INTO `accounts` VALUES (1,'type 1??','FacerDesigns ','password'),(2,'who iknows','account2','password');
+INSERT INTO `accounts` VALUES (4,'','blah blah','password'),(5,'','asdf','asdf'),(6,'','lksajdgl','asdf'),(7,'','lksajdgl','asdf'),(8,'','asdf','asdf');
 /*!40000 ALTER TABLE `accounts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -62,7 +62,6 @@ CREATE TABLE `attachments` (
 
 LOCK TABLES `attachments` WRITE;
 /*!40000 ALTER TABLE `attachments` DISABLE KEYS */;
-INSERT INTO `attachments` VALUES (6,'img/uploads/24_1431941036_hnc_honey_wand.gif','hnc_honey_wand.gif');
 /*!40000 ALTER TABLE `attachments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -108,7 +107,7 @@ CREATE TABLE `bids` (
   PRIMARY KEY (`id`,`tasks_id`),
   KEY `fk_bids_tasks1_idx` (`tasks_id`),
   CONSTRAINT `fk_bids_tasks1` FOREIGN KEY (`tasks_id`) REFERENCES `tasks` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -128,14 +127,14 @@ DROP TABLE IF EXISTS `credit_packages`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `credit_packages` (
-  `id` int(11) unsigned NOT NULL,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(45) NOT NULL,
-  `description` blob NOT NULL,
+  `description` text NOT NULL,
   `credits` int(11) NOT NULL,
   `price` decimal(5,2) NOT NULL,
   `recurring` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -144,6 +143,7 @@ CREATE TABLE `credit_packages` (
 
 LOCK TABLES `credit_packages` WRITE;
 /*!40000 ALTER TABLE `credit_packages` DISABLE KEYS */;
+INSERT INTO `credit_packages` VALUES (1,'Starter','This is your basic starter package.',10,15.00,0),(2,'Coolio','THis is super rad, yo',15,17.25,0),(3,'Recurring','Get a discount for recurring',10,13.00,1);
 /*!40000 ALTER TABLE `credit_packages` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -158,7 +158,7 @@ CREATE TABLE `credit_statuses` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `status` varchar(45) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -167,6 +167,7 @@ CREATE TABLE `credit_statuses` (
 
 LOCK TABLES `credit_statuses` WRITE;
 /*!40000 ALTER TABLE `credit_statuses` DISABLE KEYS */;
+INSERT INTO `credit_statuses` VALUES (1,'unused'),(2,'used');
 /*!40000 ALTER TABLE `credit_statuses` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -179,7 +180,7 @@ DROP TABLE IF EXISTS `credits`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `credits` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `status` int(2) NOT NULL,
+  `status` int(2) NOT NULL DEFAULT '1',
   `purchase_id` int(11) NOT NULL,
   `account_id` int(11) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -190,7 +191,7 @@ CREATE TABLE `credits` (
   KEY `fk_credits_accounts1_idx` (`account_id`),
   CONSTRAINT `credit_status_id` FOREIGN KEY (`status`) REFERENCES `credit_statuses` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `purchase_id` FOREIGN KEY (`purchase_id`) REFERENCES `purchases` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -265,7 +266,7 @@ CREATE TABLE `projects` (
   PRIMARY KEY (`id`),
   KEY `fk_projects_accounts1_idx` (`account_id`),
   CONSTRAINT `fk_projects_accounts1` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -274,7 +275,6 @@ CREATE TABLE `projects` (
 
 LOCK TABLES `projects` WRITE;
 /*!40000 ALTER TABLE `projects` DISABLE KEYS */;
-INSERT INTO `projects` VALUES (1,'Kissr',1,'','Kissr is a project Tyler\'s been working on for years (it seems like).'),(2,'Maintain Plus',1,'','Interface between JD and India, basically.');
 /*!40000 ALTER TABLE `projects` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -328,7 +328,7 @@ CREATE TABLE `purchases` (
   KEY `fk_purchases_credit_packages1_idx` (`credit_package_id`),
   CONSTRAINT `account_id` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `credit_package_id` FOREIGN KEY (`credit_package_id`) REFERENCES `credit_packages` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -388,7 +388,6 @@ CREATE TABLE `skillsets_tasks` (
 
 LOCK TABLES `skillsets_tasks` WRITE;
 /*!40000 ALTER TABLE `skillsets_tasks` DISABLE KEYS */;
-INSERT INTO `skillsets_tasks` VALUES (24,2),(25,2),(23,3),(25,3);
 /*!40000 ALTER TABLE `skillsets_tasks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -416,6 +415,7 @@ CREATE TABLE `skillsets_users` (
 
 LOCK TABLES `skillsets_users` WRITE;
 /*!40000 ALTER TABLE `skillsets_users` DISABLE KEYS */;
+INSERT INTO `skillsets_users` VALUES (63,1),(63,2);
 /*!40000 ALTER TABLE `skillsets_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -461,10 +461,10 @@ CREATE TABLE `task_timeline` (
   KEY `fk_task_messages_tasks1_idx` (`task_id`),
   KEY `fk_task_timeline_1_idx` (`attachment_id`),
   KEY `fk_task_timeline_2_idx` (`author`),
-  CONSTRAINT `fk_task_timeline_2` FOREIGN KEY (`author`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_task_messages_tasks1` FOREIGN KEY (`task_id`) REFERENCES `tasks` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_task_timeline_1` FOREIGN KEY (`attachment_id`) REFERENCES `attachments` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=latin1;
+  CONSTRAINT `fk_task_timeline_1` FOREIGN KEY (`attachment_id`) REFERENCES `attachments` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_task_timeline_2` FOREIGN KEY (`author`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -473,7 +473,6 @@ CREATE TABLE `task_timeline` (
 
 LOCK TABLES `task_timeline` WRITE;
 /*!40000 ALTER TABLE `task_timeline` DISABLE KEYS */;
-INSERT INTO `task_timeline` VALUES (32,23,46,'2015-05-18 09:23:04','Task created.',NULL),(33,24,46,'2015-05-18 09:23:32','Task created.',NULL),(34,24,46,'2015-05-18 09:23:56','I have attached the icon I want you to use.',6),(35,25,46,'2015-05-18 09:26:19','Task created.',NULL),(36,23,48,'2015-05-18 18:47:53','Task assigned to developer for bid estimate.',NULL),(37,23,48,'2015-05-18 18:49:24','Task assigned to developer for bid estimate.',NULL),(38,23,48,'2015-05-18 18:49:43','Task assigned to developer for bid estimate.',NULL),(39,23,48,'2015-05-18 18:50:00','Task assigned to developer for bid estimate.',NULL),(40,23,48,'2015-05-18 19:26:16','Task assigned to developer for bid estimate.',NULL),(41,24,48,'2015-05-18 19:26:55','Task assigned to developer for bid estimate.',NULL),(42,24,48,'2015-05-18 20:30:51','Task assigned to developer for bid estimate.',NULL),(43,24,48,'2015-05-18 20:32:49','Task assigned to developer for bid estimate.',NULL),(44,24,48,'2015-05-18 20:33:07','Task assigned to developer for bid estimate.',NULL);
 /*!40000 ALTER TABLE `task_timeline` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -506,7 +505,6 @@ CREATE TABLE `tasks` (
 
 LOCK TABLES `tasks` WRITE;
 /*!40000 ALTER TABLE `tasks` DISABLE KEYS */;
-INSERT INTO `tasks` VALUES (23,1,'Change the favicon','Change the favicon to the one I will attach.',6,47,NULL),(24,1,'Change default user icon','Change the default user icon, please.',2,47,NULL),(25,2,'Change homepage description','Change the description to: \'Woop woop, ooga booga.\'',3,47,NULL);
 /*!40000 ALTER TABLE `tasks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -561,7 +559,7 @@ CREATE TABLE `users` (
   KEY `fk_users_1_idx` (`manager`),
   CONSTRAINT `fk_users_1` FOREIGN KEY (`manager`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `user_metas_id` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='user data';
+) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='user data';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -570,7 +568,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (45,NULL,'admin','admin@mp.com','$2y$10$5.LMkJQvMLZdEyAcBfzrGu2tDTfGVSc1LfxuNGz.mRLAO/c8.X2Yq','adminFirstName','adminLastName',NULL),(46,1,'client','client@mp.com','$2y$10$efzuHcbwC4F3x8Xpe6RqKuGiospI/f8Krj8BaTqsG4zUJuFSQJOZS','clientFirst','clientLast',NULL),(47,NULL,'developer','developer@mp.com','$2y$10$21y5RWOCUpqTid5Ok2lwwuGG/BSL4iUh5UNHIezQFzcQG4l8UrAQW','developerFirst','developerLast',48),(48,NULL,'manager','manager@mp.com','$2y$10$wkkFtW6JKsivigqRoFnlD.ecFOTmfZJg2Ahr8a/pO2bA4hl59pO4a','managerFirst','managerLast',NULL),(60,NULL,'developer','developer2@mp.com','$2y$10$21y5RWOCUpqTid5Ok2lwwuGG/BSL4iUh5UNHIezQFzcQG4l8UrAQW','dev2First','dev2Last',48);
+INSERT INTO `users` VALUES (45,NULL,'admin','admin@mp.com','$2y$10$5.LMkJQvMLZdEyAcBfzrGu2tDTfGVSc1LfxuNGz.mRLAO/c8.X2Yq','adminFirstName','adminLastName',NULL),(61,NULL,'manager','manager@mp.com','$2y$10$gZJixHqYR6Jq2KbEWWoJLuD9MaZIgKPyrplJ0hy5N7dZsUWdb1a8m','Jeff','ManagerGuy',NULL),(63,NULL,'developer','developer@mp.com','$2y$10$OpY84zFLyc2wHGhtPEpqguhbaBixRX3gtfz3qcIYBU1xKK8XOQgM2','Mitch','Facer',61),(66,8,'client','client@mp.com','$2y$10$JPP.LoszoUIEyM1yQNTSe.nHgibNcrw4qflx7K1D9ZwX.9zcn79Hm','Jeff','Gordan',NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -583,4 +581,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-05-20 15:45:57
+-- Dump completed on 2015-05-26 19:55:11

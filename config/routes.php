@@ -61,6 +61,8 @@ Router::scope('/', function ($routes) {
 
 	$routes->connect('/timeline/*',['controller' => 'TaskTimeline', 'action'=> 'view']);
 
+	$routes->connect('/user/settings',['controller' => 'Users', 'action'=> 'settings']);
+
     /**
      * Connect catchall routes for all controllers.
      *

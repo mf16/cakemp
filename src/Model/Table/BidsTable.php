@@ -28,10 +28,6 @@ class BidsTable extends Table
             'foreignKey' => 'tasks_id',
             'joinType' => 'INNER'
         ]);
-        $this->belongsTo('Bidders', [
-            'foreignKey' => 'bidder_id',
-            'joinType' => 'INNER'
-        ]);
     }
 
     /**
@@ -68,7 +64,6 @@ class BidsTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['tasks_id'], 'Tasks'));
-        $rules->add($rules->existsIn(['bidder_id'], 'Bidders'));
         return $rules;
     }
 }

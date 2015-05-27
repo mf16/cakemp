@@ -82,35 +82,115 @@
 
 				<?php
 				if($task->task_status->status!='completed'){
-				?>
-					<article class="timeline-item">
-						<div class="timeline-desk">
-							<div class="panel">
-								<div class="panel-body">
-									<span class="arrow"></span>
-									<span class="timeline-icon light-green"></span>
-										<?php
-										echo '<h1 class="light-green">New message</h1>';
-										//<textarea id="clientMessage" class="form-control"></textarea>
-										echo $this->Form->create(null,[
-											'url' => ['controller'=>'TaskTimeline','action'=>'view']
-											,'enctype' => 'multipart/form-data'
-										]);
-										echo $this->Form->input('message',['type'=>'textarea','style'=>'width:100%;height:150px;','label'=>false]);
-										echo $this->Form->input('file',['type'=>'file','label'=>'Attachment']);
-										echo $this->Form->hidden('task_id',['value'=>$task->id]);
-										echo $this->Form->button('Send Message',
-										[
-											'class' => 'btn btn-primary mg-t-md'
-											,'type'=>'submit'
-										]);
-										echo $this->Form->end();
-										?>
+					if($userRole=='developer' && $task->task_status->status=='awaiting bid'){
+						?>
+						<article class="timeline-item">
+							<div class="timeline-desk">
+								<div class="panel">
+									<div class="panel-body">
+										<span class="arrow"></span>
+										<span class="timeline-icon light-green"></span>
+											<?php
+											echo '<h1 class="light-green">Submit Bid</h1>';
+											//<textarea id="clientMessage" class="form-control"></textarea>
+											echo $this->Form->create('sendBid',[
+												'url' => ['controller'=>'TaskTimeline','action'=>'view']
+											]);
+											echo $this->Form->input('wait_time',[
+												'type' => 'number'
+												,'label' => 'Lead Time (days)'
+												,'required'
+											]);
+											echo $this->Form->input('work_time',[
+												'type' => 'number'
+												,'label' => 'Work Time (hrs)'
+												,'required'
+											]);
+											echo $this->Form->hidden('actionName',['value'=>'submitBid']);
+											echo $this->Form->hidden('task_id',['value'=>$task->id]);
+											echo $this->Form->button('Submit Bid',
+											[
+												'class' => 'btn btn-primary mg-t-md'
+												,'type'=>'submit'
+											]);
+											echo $this->Form->end();
+											?>
+									</div>
 								</div>
 							</div>
-						</div>
-					</article>
-				<?php
+						</article>
+						<?php
+					} else if ($userRole=='client' && $task->task_status->status=='awaiting bid acceptance'){
+						?>
+						<article class="timeline-item">
+							<div class="timeline-desk">
+								<div class="panel">
+									<div class="panel-body">
+										<span class="arrow"></span>
+										<span class="timeline-icon light-green"></span>
+											<?php
+											echo '<h1 class="light-green">Accept/Deny Bid</h1>';
+											echo 'The current bid is a lead time of '.end($task->bids)->wait_time.' days and a cost of '.end($task->bids)->work_time.' credits.';
+											//<textarea id="clientMessage" class="form-control"></textarea>
+											echo $this->Form->create('acceptBid',[
+												'url' => ['controller'=>'TaskTimeline','action'=>'view']
+											]);
+											echo $this->Form->hidden('actionName',['value'=>'acceptBid']);
+											echo $this->Form->hidden('task_id',['value'=>$task->id]);
+											echo $this->Form->button('Accept Bid',
+											[
+												'class' => 'btn btn-primary mg-t-md'
+												,'type'=>'submit'
+											]);
+											echo $this->Form->end();
+											echo $this->Form->create('denyBid',[
+												'url' => ['controller'=>'TaskTimeline','action'=>'view']
+											]);
+											echo $this->Form->hidden('actionName',['value'=>'denyBid']);
+											echo $this->Form->hidden('task_id',['value'=>$task->id]);
+											echo $this->Form->button('Deny Bid',
+											[
+												'class' => 'btn btn-primary mg-t-md'
+												,'type'=>'submit'
+											]);
+											echo $this->Form->end();
+											?>
+									</div>
+								</div>
+							</div>
+						</article>
+						<?php
+					} else {
+						?>
+						<article class="timeline-item">
+							<div class="timeline-desk">
+								<div class="panel">
+									<div class="panel-body">
+										<span class="arrow"></span>
+										<span class="timeline-icon light-green"></span>
+											<?php
+											echo '<h1 class="light-green">New message</h1>';
+											//<textarea id="clientMessage" class="form-control"></textarea>
+											echo $this->Form->create(null,[
+												'url' => ['controller'=>'TaskTimeline','action'=>'view']
+												,'enctype' => 'multipart/form-data'
+											]);
+											echo $this->Form->input('message',['type'=>'textarea','style'=>'width:100%;height:150px;','label'=>false]);
+											echo $this->Form->input('file',['type'=>'file','label'=>'Attachment']);
+											echo $this->Form->hidden('task_id',['value'=>$task->id]);
+											echo $this->Form->button('Send Message',
+											[
+												'class' => 'btn btn-primary mg-t-md'
+												,'type'=>'submit'
+											]);
+											echo $this->Form->end();
+											?>
+									</div>
+								</div>
+							</div>
+						</article>
+						<?php
+					}
 				}
 				?>
 			</div>

@@ -35,6 +35,7 @@ class DashboardController extends AppController
 				foreach($myProjects as $myProject){
 					$query=$tasks->find('all')
 						->where(['Tasks.project_id =' => $myProject->id])
+						->contain(['Bids'])
 					;
 					$myTasks[$myProject->id]=$query->toArray();
 				}
@@ -42,11 +43,33 @@ class DashboardController extends AppController
 
 				//set taskid / status array
 				$task_statuses=TableRegistry::get('Task_statuses');
-				$query=$task_statuses->find('all');
+				$query=$task_statuses->find('list',['keyField'=>'id','valueField'=>'status']);
 				$task_statuses=$query->toArray();
 				$this->set('task_statuses',$task_statuses);
 			} else {
+				$this->render('account');
 				// todo: make user add/join account
+			}
+
+			if($this->request->is('post')){
+				$users=TableRegistry::get('Users');
+				$user=$users->get($this->Auth->user('id'));
+				if($this->request->data['actionName']=='addAccount'){
+					// add account
+					$accounts=TableRegistry::get('Accounts');
+					$account=$accounts->newEntity();
+					$account->name=$this->request->data['account_name'];
+					$account->password=$this->request->data['account_password'];
+					$account=$accounts->save($account);
+					$user->account_id=$account->id;
+					$users->save($user);
+					$userArray=$user->toArray();
+					$this->Auth->setUser($userArray);
+					$this->redirect(['controller' => 'dashboard']);
+				} else if($this->request->data['actionName']=='joinAccount'){
+					// join account
+					debug($user);die;
+				}
 			}
 		} else if ($this->Auth->user('role')=='manager'){
 			$tasks=TableRegistry::get('Tasks');
