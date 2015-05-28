@@ -153,7 +153,8 @@ class TaskTimelineController extends AppController
 				->where(['Tasks.id =' => $this->request->data['task_id']])
 			;
 			$task=$query->first();
-			debug($task);
+			//debug($this->request->data());
+			//debug($task);die;
 			//$task=$tasks->get($this->request->data['task_id']);
 
 			//debug($this->request->data);die;

@@ -150,6 +150,7 @@
 												,'required'
 											]);
 											echo $this->Form->hidden('actionName',['value'=>'submitBid']);
+											echo $this->Form->hidden('status_id',['value'=>3]);
 											echo $this->Form->hidden('task_id',['value'=>$task->id]);
 											echo $this->Form->button('Submit Bid',
 											[
@@ -182,6 +183,7 @@
 											$message='Bid accepted by client.';
 											echo $this->Form->hidden('message',['type'=>'textarea','style'=>'width:100%;height:150px;','value'=>$message,'label'=>false]);
 											echo $this->Form->hidden('task_id',['value'=>$task->id]);
+											echo $this->Form->hidden('status_id',['value'=>6]);
 											echo $this->Form->button('Accept Bid',
 											[
 												'class' => 'btn btn-primary mg-t-md'
@@ -191,6 +193,7 @@
 											echo $this->Form->create('denyBid',[
 												'url' => ['controller'=>'TaskTimeline','action'=>'view']
 											]);
+											echo $this->Form->hidden('status_id',['value'=>5]);
 											echo $this->Form->hidden('actionName',['value'=>'denyBid']);
 											$message='Bid rejected by client.';
 											echo $this->Form->hidden('message',['type'=>'textarea','style'=>'width:100%;height:150px;','value'=>$message,'label'=>false]);
